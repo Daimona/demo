@@ -49,8 +49,9 @@ cp $PHAN_PATH $PHP_PATH/
 # Pull taint-check
 if [ ! -e $TAINT_CHECK_PATH ]; then
     wget https://github.com/wikimedia/phan-taint-check-plugin/archive/$TAINT_CHECK_VERSION.tar.gz -O $TAINT_CHECK_PATH.tar.gz
-	tar zxf $TAINT_CHECK_PATH.tar.gz -C $TAINT_CHECK_PATH
-	cp $TAINT_CHECK_PATH $PHP_PATH/
+    mkdir $TAINT_CHECK_PATH
+    tar zxf $TAINT_CHECK_PATH.tar.gz -C $TAINT_CHECK_PATH
+    cp $TAINT_CHECK_PATH $PHP_PATH/
 fi
 
 
