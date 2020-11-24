@@ -51,7 +51,7 @@ ini_set('display_errors', 'stderr');
 putenv('NO_COLOR=1');
 
 try {
-    $phar_path = 'phan-3.2.1.phar';
+    $phar_path = 'phan-3.2.3.phar';
     if (!file_exists($phar_path)) {
         fwrite(STDERR, "Could not load '$phar_path' - this may not have been included when generating this site with emscripten\n");
         exit(1);
@@ -67,6 +67,19 @@ $code_base = require_once($phar . '/src/codebase.php');
 require_once($phar . '/src/Phan/Bootstrap.php');
 
 $taintCheckPath = 'phan-taint-check-plugin-3.1.0';
+// Bootstrap taint-check, since we can't really use composer autoloader. Note, order matters
+// TODO This is not pretty.
+require "$taintCheckPath/src/SecurityCheckPlugin.php";
+require "$taintCheckPath/src/TaintednessBaseVisitor.php";
+require "$taintCheckPath/src/TaintednessVisitor.php";
+require "$taintCheckPath/src/TaintednessLoopVisitor.php";
+require "$taintCheckPath/src/PreTaintednessVisitor.php";
+require "$taintCheckPath/src/MWVisitor.php";
+require "$taintCheckPath/src/MWPreVisitor.php";
+require "$taintCheckPath/src/MediaWikiHooksHelper.php";
+require "$taintCheckPath/src/Taintedness.php";
+require "$taintCheckPath/src/FunctionTaintedness.php";
+
 
 file_put_contents('input', $CONTENTS_TO_ANALYZE);
 Config::setValue('file_list', ['input']);
@@ -84,7 +97,7 @@ Config::setValue('plugins', [
     'EmptyStatementListPlugin',
     'StrictComparisonPlugin',
     'LoopVariableReusePlugin',
-	"./$taintCheckPath/GenericSecurityCheckPlugin.php"
+    "./$taintCheckPath/GenericSecurityCheckPlugin.php"
 ]);
 // This is stricter, though.
 Config::setValue('plugin_config', [
