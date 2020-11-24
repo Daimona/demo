@@ -13,3 +13,6 @@ php-7.*
 phan-taint-check-plugin*
 
 package.xml
+
+ace-builds*
+ast-*
