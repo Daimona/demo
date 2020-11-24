@@ -87,18 +87,6 @@ file_put_contents('input', $CONTENTS_TO_ANALYZE);
 Config::setValue('file_list', ['input']);
 // These plugins are what you'd see with --init-level=2
 Config::setValue('plugins', [
-    'AlwaysReturnPlugin',
-    'DollarDollarPlugin',
-    'DuplicateArrayKeyPlugin',
-    'DuplicateExpressionPlugin',
-    'PregRegexCheckerPlugin',
-    'PrintfCheckerPlugin',
-    'SleepCheckerPlugin',
-    'UnreachableCodePlugin',
-    'UseReturnValuePlugin',
-    'EmptyStatementListPlugin',
-    'StrictComparisonPlugin',
-    'LoopVariableReusePlugin',
     "./$taintCheckPath/GenericSecurityCheckPlugin.php"
 ]);
 // This is stricter, though.
@@ -179,10 +167,10 @@ querySafe( $userID );
 queryUnsafe( $userName ); // Say bye to your database.
 
 function querySafe( int $id ) {
-    queryDatabase( 'SELECT * FROM users WHERE user_id = $id' );
+    queryDatabase( "SELECT * FROM users WHERE user_id = $id" );
 }
 function queryUnsafe( string $name ) {
-    queryDatabase( 'SELECT * FROM users WHERE user_name = $name' );
+    queryDatabase( "SELECT * FROM users WHERE user_name = $name" );
 }
 
 /**
