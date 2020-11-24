@@ -9,3 +9,5 @@ php-7.*
 
 .*.swp
 .*.swo
+
+phan-taint-check-plugin*
