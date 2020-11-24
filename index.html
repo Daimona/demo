@@ -106,6 +106,21 @@ Config::setValue('plugin_config', [
     'infer_pure_methods' => true,
 ]);
 
+// This is the list used by base-config.php in taint-check
+$issuesWhitelist = [
+    'SecurityCheckMulti',
+    'SecurityCheck-XSS',
+    'SecurityCheck-SQLInjection',
+    'SecurityCheck-ShellInjection',
+    'SecurityCheck-DoubleEscaped',
+    'SecurityCheck-CUSTOM1',
+    'SecurityCheck-CUSTOM2',
+    'SecurityCheck-OTHER',
+    'SecurityCheck-LikelyFalsePositive',
+    'PhanSyntaxError',
+    'SecurityCheckDebugTaintedness',
+],
+
 $cli = CLI::fromRawValues([
     'output-mode' => 'html',
     'allow-polyfill-parser' => false,
@@ -113,6 +128,7 @@ $cli = CLI::fromRawValues([
     'redundant-condition-detection' => false,
     'dead-code-detection' => false,
     'no-progress-bar' => false,
+    'whitelist_issue_types' => $issuesWhitelist
 ], []);
 
 // Analyze the file list provided via the CLI
