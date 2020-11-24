@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Taint-check plugin in your browser</title>
+    <title>Taint-check in your browser</title>
     <script src="./ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="static/demo.css" />
     <link rel="shortcut icon" href="favicon.ico" />
@@ -12,7 +12,7 @@
 <body>
     <div class="playground">
         <div class="site-header">
-            <h1>Taint-check plugin in your browser</h1>
+            <h1>Taint-check in your browser</h1>
             <em>(Uses <a href="https://github.com/phan/phan">Phan</a> 3.2.3 and PHP 7.4.10. Best viewed in Firefox/Chrome)<br />
                 This is a fork of <a href="https://github.com/phan/demo">Phan demo</a>, available under the MIT license. View source <a href="https://github.com/Daimona/demo">on Github</a>.<br />
                 <a href="https://github.com/wikimedia/phan-taint-check-plugin">Taint-check</a> is also available on Github.
@@ -179,12 +179,17 @@ querySafe( $userID );
 queryUnsafe( $userName ); // Say bye to your database.
 
 function querySafe( int $id ) {
-    $mysqli = new mysqli("localhost", "my_user", "my_password", "world");
-    mysqli_query( $mysqli, 'SELECT * FROM users WHERE user_id = $id' );
+    queryDatabase( 'SELECT * FROM users WHERE user_id = $id' );
 }
 function queryUnsafe( string $name ) {
-    $mysqli = new mysqli("localhost", "my_user", "my_password", "world");
-    mysqli_query( $mysqli, 'SELECT * FROM users WHERE user_name = $name' );
+    queryDatabase( 'SELECT * FROM users WHERE user_name = $name' );
+}
+
+/**
+ * @param-taint $query exec_sql
+ */
+function queryDatabase( string $query ) {
+    // The annotation tells taint-check what this function does
 }
     </textarea>
     <script type="text/javascript" src="php.js"></script>
