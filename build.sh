@@ -10,6 +10,9 @@ PHAN_VERSION=3.2.3
 TAINT_CHECK_VERSION=3.1.0
 PHAN_PATH=phan-$PHAN_VERSION.phar
 TAINT_CHECK_PATH=phan-taint-check-plugin-$TAINT_CHECK_VERSION
+# Use a standalone version of ace to prevent noise with CSP etc.
+ACE_VERSION=1.4.12
+ACE_PATH=ace-builds-$ACE_VERSION
 
 if ! type emconfigure 2>/dev/null >/dev/null ; then
     echo "emconfigure not found. Install emconfigure and add it to your path (e.g. source emsdk/emsdk_env.sh)"
@@ -53,6 +56,12 @@ if [ ! -e $TAINT_CHECK_PATH ]; then
     cp -r $TAINT_CHECK_PATH $PHP_PATH/
 fi
 
+echo "Pull ace editor"
+if [ ! -e $ACE_PATH ]; then
+    wget https://github.com/ajaxorg/ace-builds/archive/v$ACE_VERSION.tar.gz -O $ACE_PATH.tar.gz
+    tar zxf $ACE_PATH.tar.gz
+    cp -r $ACE_PATH $PHP_PATH/
+fi
 
 echo "Configure"
 
