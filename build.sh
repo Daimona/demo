@@ -60,6 +60,8 @@ echo "Pull ace editor"
 if [ ! -e $ACE_PATH ]; then
     wget https://github.com/ajaxorg/ace-builds/archive/v$ACE_VERSION.tar.gz -O $ACE_PATH.tar.gz
     tar zxf $ACE_PATH.tar.gz
+    # Make it version-agnostic
+    mv ace-builds-$ACE_VERSION ace-builds
 fi
 
 echo "Configure"
