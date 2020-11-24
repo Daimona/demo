@@ -119,7 +119,7 @@ $issuesWhitelist = [
     'SecurityCheck-LikelyFalsePositive',
     'PhanSyntaxError',
     'SecurityCheckDebugTaintedness',
-],
+];
 
 $cli = CLI::fromRawValues([
     'output-mode' => 'html',
@@ -160,35 +160,34 @@ try {
 }
     </textarea>
     <textarea style="display:none" id="features_example">
-function demo($param, $arg) : ?int {
-    // Phan can infer types, detect missing elements,
-    // and detect incorrect calls.
-    global $argc;
-    var_export(new my_class());
-
-    $cond = $param > 5;
-    if (!($arg instanceof SplObjectStorage)) { return $argc; }
-    $arg->attach($cond);
-    $arg->atach(new stdClass());
-    $arg->attach(
-        new MyClass($argc),
-        [],
-        'extra'
-    );
-    // Phan can detect redundant/impossible conditions
-    // and unused variables.
-    $always_true = is_bool($cond);
-    echo "Missing variable is $argv\n";
-    return $arg;
+function printUnsafe( $thing ) {
+    echo $thing;
+}
+function printSafe( $thing ) {
+    echo htmlspecialchars( $thing );
 }
 
-class MyClass {
-    public function __construct(string $x = null) {
-        // and detect undeclared properties, etc.
-        $this->x = $x;
-    }
+$values = [
+    'escaped' => htmlspecialchars( $_GET['y'] ),
+    'unsafe' => $_GET['x']
+];
+printUnsafe( $values['unsafe'] ); // Uh-oh
+printSafe( $values['escaped'] ); // This is also wrong
+
+$userID = $_GET['user_id'];
+$userName = $_GET['user_name'];
+querySafe( $userID );
+queryUnsafe( $userName ); // Say bye to your database.
+
+function querySafe( int $id ) {
+    $mysqli = new mysqli("localhost", "my_user", "my_password", "world");
+    mysqli_query( $mysqli, 'SELECT * FROM users WHERE user_id = $id' );
 }
-demo(2, new SplObjectStorage());</textarea>
+function queryUnsafe( string $name ) {
+    $mysqli = new mysqli("localhost", "my_user", "my_password", "world");
+    mysqli_query( $mysqli, 'SELECT * FROM users WHERE user_name = $name' );
+}
+    </textarea>
     <script type="text/javascript" src="php.js"></script>
     <script type="text/javascript" src="static/demo.js"></script>
 </body>
