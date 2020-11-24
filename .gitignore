@@ -11,3 +11,5 @@ php-7.*
 .*.swo
 
 phan-taint-check-plugin*
+
+package.xml
