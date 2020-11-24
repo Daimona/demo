@@ -9,7 +9,7 @@ AST_PATH=ast-1.0.10
 PHAN_VERSION=3.2.3
 TAINT_CHECK_VERSION=3.1.0
 PHAN_PATH=phan-$PHAN_VERSION.phar
-TAINT_CHECK_PATH=taint-check-$TAINT_CHECK_VERSION
+TAINT_CHECK_PATH=phan-taint-check-plugin-$TAINT_CHECK_VERSION
 
 if ! type emconfigure 2>/dev/null >/dev/null ; then
     echo "emconfigure not found. Install emconfigure and add it to your path (e.g. source emsdk/emsdk_env.sh)"
@@ -49,8 +49,7 @@ cp $PHAN_PATH $PHP_PATH/
 # Pull taint-check
 if [ ! -e $TAINT_CHECK_PATH ]; then
     wget https://github.com/wikimedia/phan-taint-check-plugin/archive/$TAINT_CHECK_VERSION.tar.gz -O $TAINT_CHECK_PATH.tar.gz
-    mkdir $TAINT_CHECK_PATH
-    tar zxf $TAINT_CHECK_PATH.tar.gz -C $TAINT_CHECK_PATH
+    tar zxf $TAINT_CHECK_PATH.tar.gz
     cp -r $TAINT_CHECK_PATH $PHP_PATH/
 fi
 
