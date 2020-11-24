@@ -12,7 +12,7 @@ PHAN_PATH=phan-$PHAN_VERSION.phar
 TAINT_CHECK_PATH=phan-taint-check-plugin-$TAINT_CHECK_VERSION
 # Use a standalone version of ace to prevent noise with CSP etc.
 ACE_VERSION=1.4.12
-ACE_PATH=ace-builds-$ACE_VERSION
+ACE_PATH=ace-builds
 
 if ! type emconfigure 2>/dev/null >/dev/null ; then
     echo "emconfigure not found. Install emconfigure and add it to your path (e.g. source emsdk/emsdk_env.sh)"
