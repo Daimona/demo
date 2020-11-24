@@ -46,7 +46,7 @@ php $PHAN_PATH --version || exit 1
 
 cp $PHAN_PATH $PHP_PATH/
 
-# Pull taint-check
+echo "Pull taint-check"
 if [ ! -e $TAINT_CHECK_PATH ]; then
     wget https://github.com/wikimedia/phan-taint-check-plugin/archive/$TAINT_CHECK_VERSION.tar.gz -O $TAINT_CHECK_PATH.tar.gz
     tar zxf $TAINT_CHECK_PATH.tar.gz
@@ -89,7 +89,11 @@ emconfigure ./configure \
 echo "Build"
 # -j5 seems to work for parallel builds
 emmake make clean
-emmake make -j5
+
+# TODO: Parallelization is not possible on toolforge due to limited hardware, resulting in a deadlock when compiling parse_date.c
+#emmake make -j5
+emmake make
+
 rm -rf out
 mkdir -p out
 emcc $CFLAGS -I . -I Zend -I main -I TSRM/ ../pib_eval.c -c -o pib_eval.o
@@ -106,6 +110,7 @@ emcc $CFLAGS \
   -s INVOKE_RUN=0 \
   -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
   --preload-file $PHAN_PATH \
+  --preload-file $TAINT_CHECK_PATH \
   libs/libphp7.a pib_eval.o -o out/php.js
 
 cp out/php.wasm out/php.js out/php.data ..
