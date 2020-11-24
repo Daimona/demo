@@ -51,7 +51,7 @@ if [ ! -e $TAINT_CHECK_PATH ]; then
     wget https://github.com/wikimedia/phan-taint-check-plugin/archive/$TAINT_CHECK_VERSION.tar.gz -O $TAINT_CHECK_PATH.tar.gz
     mkdir $TAINT_CHECK_PATH
     tar zxf $TAINT_CHECK_PATH.tar.gz -C $TAINT_CHECK_PATH
-    cp $TAINT_CHECK_PATH $PHP_PATH/
+    cp -r $TAINT_CHECK_PATH $PHP_PATH/
 fi
 
 
