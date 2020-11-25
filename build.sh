@@ -129,6 +129,6 @@ cp out/php.wasm out/php.js out/php.data ..
 cd ..
 
 mkdir -p html
-cp -r index.html php.js php.wasm static html/
+cp -r index.html php.js php.wasm static $ACE_PATH html/
 
 echo "Done"
