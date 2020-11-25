@@ -54,6 +54,8 @@ if [ ! -e $TAINT_CHECK_PATH ]; then
     exit 1
 fi
 
+cp -r $TAINT_CHECK_PATH $PHP_PATH/
+
 echo "Pull ace editor"
 if [ ! -e $ACE_PATH ]; then
     wget https://github.com/ajaxorg/ace-builds/archive/v$ACE_VERSION.tar.gz -O $ACE_PATH.tar.gz
