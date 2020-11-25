@@ -7,9 +7,8 @@ PHP_VERSION=7.4.11
 PHP_PATH=php-$PHP_VERSION
 AST_PATH=ast-1.0.10
 PHAN_VERSION=3.2.3
-TAINT_CHECK_VERSION=3.1.0
 PHAN_PATH=phan-$PHAN_VERSION.phar
-TAINT_CHECK_PATH=phan-taint-check-plugin-$TAINT_CHECK_VERSION
+TAINT_CHECK_PATH=phan-taint-check-plugin
 # Use a standalone version of ace to prevent noise with CSP etc.
 ACE_VERSION=1.4.12
 ACE_PATH=ace-builds
@@ -51,9 +50,8 @@ cp $PHAN_PATH $PHP_PATH/
 
 echo "Pull taint-check"
 if [ ! -e $TAINT_CHECK_PATH ]; then
-    wget https://github.com/wikimedia/phan-taint-check-plugin/archive/$TAINT_CHECK_VERSION.tar.gz -O $TAINT_CHECK_PATH.tar.gz
-    tar zxf $TAINT_CHECK_PATH.tar.gz
-    cp -r $TAINT_CHECK_PATH $PHP_PATH/
+    echo "Please install phan-taint-check to $TAINT_CHECK_PATH"
+    exit 1
 fi
 
 echo "Pull ace editor"
@@ -125,5 +123,10 @@ emcc $CFLAGS \
   libs/libphp7.a pib_eval.o -o out/php.js
 
 cp out/php.wasm out/php.js out/php.data ..
+
+cd ..
+
+mkdir -p html
+cp -r index.html php.js php.wasm static html/
 
 echo "Done"
