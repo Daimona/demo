@@ -154,14 +154,14 @@ function printSafe( $thing ) {
 }
 
 $values = [
-    'escaped' => htmlspecialchars( $_GET['y'] ),
-    'unsafe' => $_GET['x']
+    'escaped' => htmlspecialchars( $_GET['y'] ?? '' ),
+    'unsafe' => $_GET['x'] ?? ''
 ];
 printUnsafe( $values['unsafe'] ); // Uh-oh
 printSafe( $values['escaped'] ); // This is also wrong
 
-$userID = $_GET['user_id'];
-$userName = $_GET['user_name'];
+$userID = $_GET['user_id'] ?? 0;
+$userName = $_GET['user_name'] ?? '';
 querySafe( $userID );
 queryUnsafe( $userName ); // Say bye to your database.
 
