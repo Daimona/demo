@@ -6,9 +6,6 @@ set -xeu
 PHP_VERSION=7.4.11
 PHP_PATH=php-$PHP_VERSION
 AST_PATH=ast-1.0.10
-# FIXME: We should use whatever version taint-check requires
-PHAN_VERSION=3.2.3
-PHAN_PATH=phan-$PHAN_VERSION.phar
 TAINT_CHECK_PATH=phan-taint-check-plugin
 # Use a standalone version of ace to prevent noise with CSP etc.
 ACE_VERSION=1.4.12
@@ -31,9 +28,21 @@ fi
 echo "Apply error handler patch"
 cp main.c $PHP_PATH/main/
 
-echo "Get Phan phar"
+echo "Verify taint-check"
+if [ ! -e $TAINT_CHECK_PATH ]; then
+    echo "Please install phan-taint-check to $TAINT_CHECK_PATH"
+    exit 1
+fi
+
+cp -r $TAINT_CHECK_PATH $PHP_PATH/
+
+PHAN_VERSION=$(jq '.require | .["phan/phan"]' $TAINT_CHECK_PATH/composer.json)
+PHAN_PATH=phan-$PHAN_VERSION.phar
+
+echo "Verify phan"
 
 if [ ! -e $PHAN_PATH ]; then
+    echo "Get Phan phar"
     wget https://github.com/phan/phan/releases/download/$PHAN_VERSION/phan.phar -O $PHAN_PATH
 fi
 if [ ! -d "$PHP_PATH/ext/ast"  ]; then
@@ -49,16 +58,9 @@ php $PHAN_PATH --version || exit 1
 
 cp $PHAN_PATH $PHP_PATH/
 
-echo "Pull taint-check"
-if [ ! -e $TAINT_CHECK_PATH ]; then
-    echo "Please install phan-taint-check to $TAINT_CHECK_PATH"
-    exit 1
-fi
-
-cp -r $TAINT_CHECK_PATH $PHP_PATH/
-
-echo "Pull ace editor"
+echo "Verify ace editor"
 if [ ! -e $ACE_PATH ]; then
+    echo "Pull ace editor"
     wget https://github.com/ajaxorg/ace-builds/archive/v$ACE_VERSION.tar.gz -O $ACE_PATH.tar.gz
     tar zxf $ACE_PATH.tar.gz
     # Make it version-agnostic
@@ -72,6 +74,9 @@ echo "Configure"
 # NOTE: If -g4 is used, then firefox can require a lot of memory to load the resulting file.
 export CFLAGS=-O3
 cd $PHP_PATH
+
+# TODO Can we avoid rebuilding if already done?
+
 # Configure this with a minimal set of extensions, statically compiling the third-party ast library.
 # Run buildconf so that ast will a valid configure option
 ./buildconf --force
@@ -102,7 +107,6 @@ echo "Build"
 emmake make clean
 
 # TODO: Parallelization is not possible on toolforge due to limited hardware, resulting in a deadlock when compiling parse_date.c
-# FIXME: It's not necessary to do this every time
 #  Debug failures with export EMCC_DEBUG=1; emmake make -j5 VERBOSE=1
 #emmake make -j5
 emmake make
