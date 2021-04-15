@@ -107,6 +107,10 @@ emmake make
 
 rm -rf out
 mkdir -p out
+
+# Package taint-check separately since the PHP license is incompatible with GPL
+./../../emsdk/upstream/emscripten/tools/file_packager out/taint-check.data --preload $TAINT_CHECK_PATH/ --js-output=out/taint-check.js --export-name='PHP'
+
 emcc $CFLAGS -I . -I Zend -I main -I TSRM/ ../pib_eval.c -c -o pib_eval.o
 # NOTE: If this crashes with code 16, ASSERTIONS=1 is useful
 emcc $CFLAGS \
@@ -119,16 +123,17 @@ emcc $CFLAGS \
   -s TOTAL_MEMORY=134217728 \
   -s ASSERTIONS=0 \
   -s INVOKE_RUN=0 \
+  -s FORCE_FILESYSTEM=1 \
   -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
   --preload-file $PHAN_PATH \
-  --preload-file $TAINT_CHECK_PATH \
+  --pre-js out/taint-check.js \
   libs/libphp7.a pib_eval.o -o out/php.js
 
-cp out/php.wasm out/php.js out/php.data ..
+cp out/php.{wasm,js,data} taint-check.{js,data} ..
 
 cd ..
 
 mkdir -p html
-cp -r index.html php.js php.wasm php.data static $ACE_PATH html/
+cp -r index.html php.{js,wasm,data} taint-check.{js,data} static $ACE_PATH html/
 
 echo "Done"
