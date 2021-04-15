@@ -6,6 +6,7 @@ set -xeu
 PHP_VERSION=7.4.11
 PHP_PATH=php-$PHP_VERSION
 AST_PATH=ast-1.0.10
+# FIXME: We should use whatever version taint-check requires
 PHAN_VERSION=3.2.3
 PHAN_PATH=phan-$PHAN_VERSION.phar
 TAINT_CHECK_PATH=phan-taint-check-plugin
@@ -101,6 +102,7 @@ echo "Build"
 emmake make clean
 
 # TODO: Parallelization is not possible on toolforge due to limited hardware, resulting in a deadlock when compiling parse_date.c
+# FIXME: It's not necessary to do this every time
 #  Debug failures with export EMCC_DEBUG=1; emmake make -j5 VERBOSE=1
 #emmake make -j5
 emmake make
@@ -109,7 +111,7 @@ rm -rf out
 mkdir -p out
 
 # Package taint-check separately since the PHP license is incompatible with GPL
-./../../emsdk/upstream/emscripten/tools/file_packager out/taint-check.data --preload $TAINT_CHECK_PATH/ --js-output=out/taint-check.js --export-name='PHP'
+sh $EMSDK/upstream/emscripten/tools/file_packager out/taint-check.data --preload $TAINT_CHECK_PATH/ --js-output=out/taint-check.js --export-name='PHP'
 
 emcc $CFLAGS -I . -I Zend -I main -I TSRM/ ../pib_eval.c -c -o pib_eval.o
 # NOTE: If this crashes with code 16, ASSERTIONS=1 is useful
