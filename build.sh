@@ -142,4 +142,9 @@ cd ..
 mkdir -p html
 cp -r index.html php.{js,wasm,data} taint-check.{js,data} static $ACE_PATH html/
 
+echo "Updating paths in the HTML file"
+# FIXME This is a hack.
+sed -r -i "s/\\\$phar_path =.+/\$phar_path = '$PHAN_PATH';/" index.html
+sed -r -i "s/\\\$taintCheckPath =.+/\$taintCheckPath = '$TAINT_CHECK_PATH';/" index.html
+
 echo "Done"
