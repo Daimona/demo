@@ -3,7 +3,7 @@
 # TODO: https://emscripten.org/docs/porting/Debugging.html
 set -xeu
 
-PHP_VERSION=7.4.11
+PHP_VERSION=7.4.16
 PHP_PATH=php-$PHP_VERSION
 AST_PATH=ast-1.0.10
 TAINT_CHECK_PATH=phan-taint-check-plugin
@@ -15,7 +15,6 @@ if ! type emconfigure 2>/dev/null >/dev/null ; then
     echo "emconfigure not found. Install emconfigure and add it to your path (e.g. source emsdk/emsdk_env.sh)"
     exit 1
 fi
-
 
 echo "Get PHP source"
 if [ ! -d $PHP_PATH ]; then
@@ -119,6 +118,7 @@ sh $EMSDK/upstream/emscripten/tools/file_packager out/taint-check.data --preload
 
 emcc $CFLAGS -I . -I Zend -I main -I TSRM/ ../pib_eval.c -c -o pib_eval.o
 # NOTE: If this crashes with code 16, ASSERTIONS=1 is useful
+# -s IMPORTED_MEMORY=1 may help reduce memory if emscripten 3.0.10 is used?
 emcc $CFLAGS \
   --llvm-lto 2 \
   -s ENVIRONMENT=web \
