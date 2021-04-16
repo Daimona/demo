@@ -33,6 +33,7 @@ if [ ! -e $TAINT_CHECK_PATH ]; then
     exit 1
 fi
 
+rm -rf $PHP_PATH/$TAINT_CHECK_PATH
 cp -r $TAINT_CHECK_PATH $PHP_PATH/
 
 PHAN_VERSION=$(jq '.require | .["phan/phan"]' $TAINT_CHECK_PATH/composer.json)
@@ -55,6 +56,7 @@ fi
 # Check that the phar is not corrupt
 php $PHAN_PATH --version || exit 1
 
+rm -rf $PHP_PATH/$PHAN_PATH
 cp $PHAN_PATH $PHP_PATH/
 
 echo "Verify ace editor"
