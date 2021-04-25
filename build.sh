@@ -138,7 +138,7 @@ emcc $CFLAGS \
   --pre-js out/taint-check.js \
   libs/libphp7.a pib_eval.o -o out/php.js
 
-cp out/php.{wasm,js,data} taint-check.{js,data} ..
+cp out/php.{wasm,js,data} out/taint-check.{js,data} ..
 
 cd ..
 
