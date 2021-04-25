@@ -107,10 +107,9 @@ echo "Build"
 # -j5 seems to work for parallel builds
 emmake make clean
 
-# TODO: Parallelization is not possible on toolforge due to limited hardware, resulting in a deadlock when compiling parse_date.c
+# NOTE: On toolforge, this might fail when compiling parse_date.c, probably due to limited resources.
 #  Debug failures with export EMCC_DEBUG=1; emmake make -j5 VERBOSE=1
-#emmake make -j5
-emmake make
+emmake make -j5
 
 rm -rf out
 mkdir -p out
