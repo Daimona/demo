@@ -52,41 +52,29 @@ ini_set('display_errors', 'stderr');
 putenv('NO_COLOR=1');
 
 try {
-    $phar_path = 'phan-4.0.4.phar';
+    $phar_path = 'taint-check.phar';
     if (!file_exists($phar_path)) {
         fwrite(STDERR, "Could not load '$phar_path' - this may not have been included when generating this site with emscripten\n");
         exit(1);
     }
 
     $phar = "phar://$phar_path";
+	$phan_path = $phar . '/vendor/phan/phan';
     gc_disable();
-    $data = require($phar . '/src/Phan/Language/Internal/ClassDocumentationMap.php');
-    require_once($phar . '/src/requirements.php');
+    $data = require($phan_path . '/src/Phan/Language/Internal/ClassDocumentationMap.php');
+    require_once($phan_path . '/src/requirements.php');
 
-$code_base = require_once($phar . '/src/codebase.php');
+$code_base = require_once($phan_path . '/src/codebase.php');
 
-require_once($phar . '/src/Phan/Bootstrap.php');
+require_once($phan_path . '/src/Phan/Bootstrap.php');
 
 $taintCheckPath = 'phan-taint-check-plugin';
-// Bootstrap taint-check, since we can't really use composer autoloader. Note, order matters
-// TODO This is not pretty.
-require_once "$taintCheckPath/src/TaintednessAccessorsTrait.php";
-require_once "$taintCheckPath/src/SecurityCheckPlugin.php";
-require_once "$taintCheckPath/src/TaintednessBaseVisitor.php";
-// Order shouldn't matter for the rest of the files
-foreach ( glob( "$taintCheckPath/src/*.php" ) as $filename ) {
-	require_once $filename;
-}
 
 file_put_contents('input', $CONTENTS_TO_ANALYZE);
 Config::setValue('file_list', ['input']);
-// These plugins are what you'd see with --init-level=2
+
 Config::setValue('plugins', [
-    "./$taintCheckPath/GenericSecurityCheckPlugin.php"
-]);
-// This is stricter, though.
-Config::setValue('plugin_config', [
-    'infer_pure_methods' => true,
+    "$phar/GenericSecurityCheckPlugin.php"
 ]);
 
 // This is the list used by base-config.php in taint-check

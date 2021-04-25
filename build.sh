@@ -35,31 +35,15 @@ if [ ! -e $TAINT_CHECK_PATH ]; then
     exit 1
 fi
 
-rm -rf $PHP_PATH/$TAINT_CHECK_PATH
-cp -r $TAINT_CHECK_PATH $PHP_PATH/
+echo "Generating taint-check phar"
+cd $TAINT_CHECK_PATH
 
-PHAN_VERSION=$(jq -r '.require | .["phan/phan"]' $TAINT_CHECK_PATH/composer.json)
-PHAN_PATH=phan-$PHAN_VERSION.phar
-
-echo "Verify phan"
-
-if [ ! -e $PHAN_PATH ]; then
-    echo "Get Phan phar"
-    wget https://github.com/phan/phan/releases/download/$PHAN_VERSION/phan.phar -O $PHAN_PATH
-fi
-if [ ! -d "$PHP_PATH/ext/ast"  ]; then
-    if [ ! -f "$AST_PATH.tgz" ]; then
-        wget https://pecl.php.net/get/$AST_PATH.tgz -O $AST_PATH.tgz
-    fi
-    tar zxf $AST_PATH.tgz
-    mv "$AST_PATH" "$PHP_PATH/ext/ast"
-fi
-
+./internal/make_phar.sh
 # Check that the phar is not corrupt
-php $PHAN_PATH --version || exit 1
+php ./build/taint-check.phar --version || exit 1
 
-rm -rf $PHP_PATH/$PHAN_PATH
-cp $PHAN_PATH $PHP_PATH/
+cd ..
+cp $TAINT_CHECK_PATH/build/taint-check.phar $PHP_PATH/
 
 echo "Verify ace editor"
 if [ ! -e $ACE_PATH ]; then
@@ -117,7 +101,7 @@ rm -rf out
 mkdir -p out
 
 # Package taint-check separately since the PHP license is incompatible with GPL
-sh $EMSDK/upstream/emscripten/tools/file_packager out/taint-check.data --preload $TAINT_CHECK_PATH/ --js-output=out/taint-check.js --export-name='PHP'
+sh $EMSDK/upstream/emscripten/tools/file_packager out/taint-check.data --preload taint-check.phar --js-output=out/taint-check.js --export-name='PHP'
 
 emcc $CFLAGS -I . -I Zend -I main -I TSRM/ ../pib_eval.c -c -o pib_eval.o
 # NOTE: If this crashes with code 16, ASSERTIONS=1 is useful
@@ -134,7 +118,6 @@ emcc $CFLAGS \
   -s INVOKE_RUN=0 \
   -s FORCE_FILESYSTEM=1 \
   -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
-  --preload-file $PHAN_PATH \
   --pre-js out/taint-check.js \
   libs/libphp7.a pib_eval.o -o out/php.js
 
@@ -144,10 +127,5 @@ cd ..
 
 mkdir -p html
 cp -r index.html php.{js,wasm,data} taint-check.{js,data} static $ACE_PATH html/
-
-echo "Updating paths in the HTML file"
-# FIXME This is a hack.
-sed -r -i "s/\\\$phar_path =.+/\$phar_path = '$PHAN_PATH';/" html/index.html
-sed -r -i "s/\\\$taintCheckPath =.+/\$taintCheckPath = '$TAINT_CHECK_PATH';/" html/index.html
 
 echo "Done"
