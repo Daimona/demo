@@ -16,11 +16,13 @@ if ! type emconfigure 2>/dev/null >/dev/null ; then
     exit 1
 fi
 
-echo "Get PHP source"
+echo "Check PHP source"
 if [ ! -d $PHP_PATH ]; then
     if [ ! -e $PHP_PATH.tar.xz ]; then
+		echo "Get PHP source"
         wget https://www.php.net/distributions/$PHP_PATH.tar.xz
     fi
+	echo "Extract PHP source"
     tar xf $PHP_PATH.tar.xz
 fi
 
