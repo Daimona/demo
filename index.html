@@ -70,6 +70,7 @@ require_once($phar . '/src/Phan/Bootstrap.php');
 $taintCheckPath = 'phan-taint-check-plugin';
 // Bootstrap taint-check, since we can't really use composer autoloader. Note, order matters
 // TODO This is not pretty.
+require_once "$taintCheckPath/src/TaintednessAccessorsTrait.php";
 require_once "$taintCheckPath/src/SecurityCheckPlugin.php";
 require_once "$taintCheckPath/src/TaintednessBaseVisitor.php";
 // Order shouldn't matter for the rest of the files

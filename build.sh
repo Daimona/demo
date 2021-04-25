@@ -36,7 +36,7 @@ fi
 rm -rf $PHP_PATH/$TAINT_CHECK_PATH
 cp -r $TAINT_CHECK_PATH $PHP_PATH/
 
-PHAN_VERSION=$(jq '.require | .["phan/phan"]' $TAINT_CHECK_PATH/composer.json)
+PHAN_VERSION=$(jq -r '.require | .["phan/phan"]' $TAINT_CHECK_PATH/composer.json)
 PHAN_PATH=phan-$PHAN_VERSION.phar
 
 echo "Verify phan"
