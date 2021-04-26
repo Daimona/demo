@@ -77,20 +77,10 @@ Config::setValue('plugins', [
     "$phar/GenericSecurityCheckPlugin.php"
 ]);
 
+$taintCheckConfig = require_once "$phar/scripts/base-config.php";
+
 // This is the list used by base-config.php in taint-check
-Config::setValue( 'whitelist_issue_types', [
-    'SecurityCheckMulti',
-    'SecurityCheck-XSS',
-    'SecurityCheck-SQLInjection',
-    'SecurityCheck-ShellInjection',
-    'SecurityCheck-DoubleEscaped',
-    'SecurityCheck-CUSTOM1',
-    'SecurityCheck-CUSTOM2',
-    'SecurityCheck-OTHER',
-    'SecurityCheck-LikelyFalsePositive',
-    'PhanSyntaxError',
-    'SecurityCheckDebugTaintedness',
-] );
+Config::setValue( 'whitelist_issue_types', $taintCheckConfig['whitelist_issue_types'] );
 
 $cli = CLI::fromRawValues([
     'output-mode' => 'html',
