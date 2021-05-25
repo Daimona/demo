@@ -121,11 +121,15 @@ emcc $CFLAGS \
   --pre-js out/taint-check.js \
   libs/libphp7.a pib_eval.o -o out/php.js
 
-cp out/php.{wasm,js,data} out/taint-check.{js,data} ..
+cp out/php.* out/taint-check.{js,data} ..
 
 cd ..
 
 mkdir -p html
-cp -r index.html php.{js,wasm,data} taint-check.{js,data} static $ACE_PATH html/
+cp -r index.html php.{js,wasm} taint-check.{js,data} static $ACE_PATH html/
+if [[ -f php.data ]]; then
+    # This file stopped being necessary somewhere between emscripten 2.0.9 and 2.0.20
+    cp php.data html/
+fi
 
 echo "Done"
