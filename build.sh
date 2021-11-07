@@ -5,7 +5,7 @@ set -xeu
 
 PHP_VERSION=7.4.16
 PHP_PATH=php-$PHP_VERSION
-AST_PATH=ast-1.0.10
+AST_PATH=ast-1.0.14
 TAINT_CHECK_PATH=phan-taint-check-plugin
 # Use a standalone version of ace to prevent noise with CSP etc.
 ACE_VERSION=1.4.12
@@ -19,7 +19,7 @@ fi
 echo "Check PHP source"
 if [ ! -d $PHP_PATH ]; then
     if [ ! -e $PHP_PATH.tar.xz ]; then
-		echo "Get PHP source"
+        echo "Get PHP source"
         wget https://www.php.net/distributions/$PHP_PATH.tar.xz
     fi
 	echo "Extract PHP source"
@@ -28,6 +28,16 @@ fi
 
 echo "Apply error handler patch"
 cp main.c $PHP_PATH/main/
+
+echo "Check ast"
+if [ ! -d "$PHP_PATH/ext/ast"  ]; then
+    if [ ! -f "$AST_PATH.tgz" ]; then
+        echo "Get ast"
+        wget https://pecl.php.net/get/$AST_PATH.tgz -O $AST_PATH.tgz
+    fi
+    tar zxf $AST_PATH.tgz
+    mv "$AST_PATH" "$PHP_PATH/ext/ast"
+fi
 
 echo "Verify taint-check"
 if [ ! -e $TAINT_CHECK_PATH ]; then
