@@ -3,7 +3,7 @@
 # TODO: https://emscripten.org/docs/porting/Debugging.html
 set -xeu
 
-PHP_VERSION=7.4.33
+PHP_VERSION=8.1.30
 PHP_PATH=php-$PHP_VERSION
 AST_PATH=ast-1.1.2
 TAINT_CHECK_PATH=phan-taint-check-plugin
@@ -27,7 +27,7 @@ if [ ! -d $PHP_PATH ]; then
 fi
 
 echo "Apply error handler patch"
-cp main.c $PHP_PATH/main/
+cp main.c $PHP_PATH/main/main.c
 
 echo "Check ast"
 if [ ! -d "$PHP_PATH/ext/ast"  ]; then
@@ -113,8 +113,7 @@ echo "Build"
 # -j5 seems to work for parallel builds
 emmake make clean
 
-# NOTE: On toolforge, this might fail when compiling parse_date.c, probably due to limited resources.
-#  Debug failures with export EMCC_DEBUG=1; emmake make -j5 VERBOSE=1
+# Debug failures with export EMCC_DEBUG=1; emmake make -j5 VERBOSE=1
 emmake make -j5
 
 rm -rf out
@@ -139,7 +138,7 @@ emcc $CFLAGS \
   -s FORCE_FILESYSTEM=1 \
   -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
   --pre-js out/taint-check.js \
-  libs/libphp7.a pib_eval.o -o out/php.js
+  libs/libphp.a pib_eval.o -o out/php.js
 
 cp out/php.* out/taint-check.{js,data} ..
 
