@@ -145,10 +145,6 @@ cp out/php.* out/taint-check.{js,data} ..
 cd ..
 
 mkdir -p html
-cp -r index.html php.{js,wasm} taint-check.{js,data} static $ACE_PATH html/
-if [[ -f php.data ]]; then
-    # This file stopped being necessary somewhere between emscripten 2.0.9 and 2.0.20
-    cp php.data html/
-fi
+cp -r index.html php.{js,wasm,data} taint-check.{js,data} static $ACE_PATH html/
 
 echo "Done"
