@@ -77,6 +77,8 @@ cd $PHP_PATH
 # Configure this with a minimal set of extensions, statically compiling the third-party ast library.
 # Run buildconf so that ast will a valid configure option
 ./buildconf --force
+
+set +e
 emconfigure ./configure \
   --disable-all \
   --disable-cgi \
@@ -98,6 +100,13 @@ emconfigure ./configure \
   --enable-mbstring \
   --disable-mbregex \
   --enable-tokenizer
+
+if [ $? -ne 0 ]; then
+    cat config.log
+    exit 1
+fi
+
+set -e
 
 echo "Build"
 # -j5 seems to work for parallel builds
