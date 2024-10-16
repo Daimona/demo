@@ -3,12 +3,12 @@
 # TODO: https://emscripten.org/docs/porting/Debugging.html
 set -xeu
 
-PHP_VERSION=7.4.16
+PHP_VERSION=7.4.33
 PHP_PATH=php-$PHP_VERSION
-AST_PATH=ast-1.0.14
+AST_PATH=ast-1.1.2
 TAINT_CHECK_PATH=phan-taint-check-plugin
 # Use a standalone version of ace to prevent noise with CSP etc.
-ACE_VERSION=1.4.12
+ACE_VERSION=1.36.2
 ACE_PATH=ace-builds
 
 if ! type emconfigure 2>/dev/null >/dev/null ; then
