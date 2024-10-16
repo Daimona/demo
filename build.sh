@@ -3,7 +3,7 @@
 # TODO: https://emscripten.org/docs/porting/Debugging.html
 set -xeu
 
-PHP_VERSION=8.1.30
+PHP_VERSION=8.2.0
 PHP_PATH=php-$PHP_VERSION
 AST_PATH=ast-1.1.2
 TAINT_CHECK_PATH=phan-taint-check-plugin
