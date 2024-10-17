@@ -296,7 +296,7 @@ function generateNewPHPModule() {
         }
     };
     console.log('creating PHP module fetchPreloadedPackage override');
-    return PHP(phpModuleOptions).then(function (newPHPModule) {
+    return Module(phpModuleOptions).then(function (newPHPModule) {
         console.log('created PHP module', newPHPModule);
         return newPHPModule;
     }).catch(function (error) {
@@ -330,7 +330,7 @@ function showWebAssemblyError(message) {
 }
 if (!window.WebAssembly) {
     showWebAssemblyError('Your browser does not support WebAssembly.');
-} else if (!window.PHP) {
+} else if (!window.Module) {
     showWebAssemblyError('Failed to load php.js.');
 } else {
     console.log('downloading php.wasm');

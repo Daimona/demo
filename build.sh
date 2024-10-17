@@ -120,18 +120,18 @@ rm -rf out
 mkdir -p out
 
 # Package taint-check separately since the PHP license is incompatible with GPL
-sh $EMSDK/upstream/emscripten/tools/file_packager out/php.data --preload taint-check.phar --js-output=out/taint-check.js --export-name='PHP'
+sh $EMSDK/upstream/emscripten/tools/file_packager out/php.data --preload taint-check.phar --js-output=out/taint-check.js
 
 emcc $CFLAGS -I . -I Zend -I main -I TSRM/ ../pib_eval.c -c -o pib_eval.o
 # NOTE: If this crashes with code 16, ASSERTIONS=1 is useful
 # -s IMPORTED_MEMORY=1 may help reduce memory if emscripten 3.0.10 is used?
+# XXX No "PHP" export name because of https://github.com/emscripten-core/emscripten/issues/22757
 emcc $CFLAGS \
   --llvm-lto 2 \
   -s ENVIRONMENT=web \
   -s EXPORTED_FUNCTIONS='["_pib_eval", "_php_embed_init", "_zend_eval_string", "_php_embed_shutdown"]' \
   -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall"]' \
   -s MODULARIZE=1 \
-  -s EXPORT_NAME="'PHP'" \
   -s TOTAL_MEMORY=134217728 \
   -s ASSERTIONS=0 \
   -s INVOKE_RUN=0 \
