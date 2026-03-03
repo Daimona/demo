@@ -5,7 +5,7 @@ set -xeu
 
 PHP_VERSION=8.4.11
 PHP_PATH=php-$PHP_VERSION
-AST_PATH=ast-1.1.2
+AST_PATH=ast-1.1.3
 TAINT_CHECK_PATH=phan-taint-check-plugin
 # Use a standalone version of ace to prevent noise with CSP etc.
 ACE_VERSION=1.36.2
