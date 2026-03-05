@@ -70,6 +70,12 @@ require_once($phan_path . '/src/Phan/Bootstrap.php');
 
 $taintCheckPath = 'phan-taint-check-plugin';
 
+// Create a stub .phan/config.php to suppress warning
+if (!file_exists('.phan/config.php')) {
+    @mkdir('.phan', 0777, true);
+    file_put_contents('.phan/config.php', '<?php return [];');
+}
+
 file_put_contents('input', $CONTENTS_TO_ANALYZE);
 Config::setValue('file_list', ['input']);
 
