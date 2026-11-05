@@ -100,7 +100,8 @@ emconfigure ./configure \
   --enable-mbstring \
   --disable-mbregex \
   --disable-fiber-asm \
-  --enable-tokenizer
+  --enable-tokenizer \
+  --disable-opcache-jit
 
 if [ $? -ne 0 ]; then
     echo "emconfigure failed. Content of config.log:"
